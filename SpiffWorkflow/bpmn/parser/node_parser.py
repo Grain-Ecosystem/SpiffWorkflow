@@ -13,6 +13,7 @@ class NodeParser:
         self.xpath = xpath_eval(node)
         self.lane = self._get_lane() or lane
         self.position = self._get_position() or {'x': 0.0, 'y': 0.0}
+        self.group = self._get_group()
 
     def get_id(self):
         return self.node.get('id')
@@ -65,3 +66,32 @@ class NodeParser:
         bounds = first(self.doc_xpath(f".//bpmndi:BPMNShape[@bpmnElement='{self.get_id()}']//dc:Bounds"))
         if bounds is not None:
             return {'x': float(bounds.get('x', 0)), 'y': float(bounds.get('y', 0))}
+
+    def _get_group(self):
+        shape = first(self.doc_xpath(f".//bpmndi:BPMNShape[@bpmnElement='{self.get_id()}']//dc:Bounds"))
+        if shape is not None:
+            node_bounds = {
+                'x': float(shape.get('x', 0)),
+                'y': float(shape.get('y', 0)),
+                'w': float(shape.get('width', 0)),
+                'h': float(shape.get('height', 0))}
+
+        p = self.xpath('..')[0]
+
+        children = p.getchildren()
+        for child in children:
+            if 'group' in child.tag:
+                g_id = child.get('id')
+                cref = child.get('categoryValueRef')
+                cat_val = first(self.doc_xpath(f".//bpmn:categoryValue[@id='{cref}']"))
+                group_name = cat_val.get('value')
+                bounds = first(self.doc_xpath(f".//bpmndi:BPMNShape[@bpmnElement='{g_id}']//dc:Bounds"))
+                x = float(bounds.get('x', 0))
+                y = float(bounds.get('y', 0))
+                w = float(bounds.get('width', 0))
+                h = float(bounds.get('height', 0))
+
+                if node_bounds['x'] > x and node_bounds['x']+node_bounds['w'] < (x+w) and node_bounds['y'] > y and node_bounds['y']+node_bounds['h'] < (y+h):
+                    return group_name
+
+        return "no group"

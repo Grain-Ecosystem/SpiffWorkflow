@@ -194,7 +194,8 @@ class ScriptTaskParser(TaskParser):
         return self.spec_class(self.spec, self.get_task_spec_name(), script,
                                lane=self.lane,
                                position=self.position,
-                               description=self.node.get('name', None))
+                               description=self.node.get('name', None),
+                               group=self.group)
 
     def get_script(self):
         """

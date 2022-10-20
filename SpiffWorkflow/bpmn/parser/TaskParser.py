@@ -224,7 +224,8 @@ class TaskParser(NodeParser):
         return self.spec_class(self.spec, self.get_task_spec_name(),
                                lane=self.lane,
                                description=self.node.get('name', None),
-                               position=self.position)
+                               position=self.position,
+                               group=self.group)
 
     def connect_outgoing(self, outgoing_task, outgoing_task_node,
                          sequence_flow_node, is_default):

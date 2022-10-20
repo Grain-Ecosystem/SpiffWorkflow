@@ -61,7 +61,7 @@ class BpmnSpecMixin(TaskSpec):
     methods that are BPMN specific to the TaskSpec.
     """
 
-    def __init__(self, wf_spec, name, lane=None, position=None, **kwargs):
+    def __init__(self, wf_spec, name, lane=None, position=None, group=None, **kwargs):
         """
         Constructor.
 
@@ -77,6 +77,7 @@ class BpmnSpecMixin(TaskSpec):
         self.documentation = None
         self.data_input_associations = []
         self.data_output_associations = []
+        self.group = group
 
     @property
     def spec_type(self):
