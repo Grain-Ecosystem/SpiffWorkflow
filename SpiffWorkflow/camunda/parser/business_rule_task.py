@@ -19,6 +19,7 @@ class BusinessRuleTaskParser(TaskParser):
                                 dmnEngine=self.process_parser.parser.get_engine(decision_ref, self.node),
                                 lane=self.lane, position=self.position,
                                 description=self.node.get('name', None),
+                                group=self.group
                                 )
 
     @staticmethod
