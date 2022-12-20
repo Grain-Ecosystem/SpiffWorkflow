@@ -19,7 +19,8 @@ class UserTaskParser(TaskParser):
         return self.spec_class(self.spec, self.get_task_spec_name(), form,
                                lane=self.lane,
                                position=self.position,
-                               description=self.node.get('name', None))
+                               description=self.node.get('name', None),
+                               group=self.group)
 
     def get_form(self):
         """Camunda provides a simple form builder, this will extract the

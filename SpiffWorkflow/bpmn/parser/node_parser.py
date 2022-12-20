@@ -57,6 +57,28 @@ class NodeParser:
             extensions[node.get('name')] = node.get('value')
         return extensions
 
+    def parse_extensions_inputs(self, node=None):
+        extensions_inputs = {}
+        extra_ns = {"camunda": CAMUNDA_MODEL_NS}
+        xpath = xpath_eval(self.node, extra_ns) if node is None else xpath_eval(node, extra_ns)
+        extension_inout_nodes = xpath(".//bpmn:extensionElements/camunda:inputOutput/camunda:inputParameter")
+        for node in extension_inout_nodes:
+            extensions_inputs[node.get("name")] = {}
+            if first(xpath(".//bpmn:extensionElements/camunda:inputOutput/camunda:inputParameter/camunda:map")):
+                entries = xpath(".//bpmn:extensionElements/camunda:inputOutput/camunda:inputParameter/camunda:map/camunda:entry")
+                for entry in entries:
+                    extensions_inputs[node.get("name")][entry.get("key")] = entry.text
+        return extensions_inputs        
+
+    def parse_extensions_outputs(self, node=None):
+        extensions_outputs = {}
+        extra_ns = {"camunda": CAMUNDA_MODEL_NS}
+        xpath = xpath_eval(self.node, extra_ns) if node is None else xpath_eval(node, extra_ns)
+        extension_out_nodes = xpath(".//bpmn:extensionElements/camunda:inputOutput/camunda:outputParameter")
+        for node in extension_out_nodes:
+            extensions_outputs[node.get("name")] = node.text
+        return extensions_outputs
+        
     def _get_lane(self):
         noderef = first(self.doc_xpath(f".//bpmn:flowNodeRef[text()='{self.get_id()}']"))
         if noderef is not None:

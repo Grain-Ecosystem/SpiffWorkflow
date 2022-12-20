@@ -129,6 +129,9 @@ class TaskParser(NodeParser):
             # Why do we just set random attributes willy nilly everywhere in the code????
             # And we still pass around a gigantic kwargs dict whenever we create anything!
             self.task.extensions = self.parse_extensions()
+            self.task.extensions_inputs = self.parse_extensions_inputs()
+            self.task.extensions_outputs = self.parse_extensions_outputs()
+
             self.task.documentation = self.parse_documentation()
             # And now I have to add more of the same crappy thing.
             self.task.data_input_associations = self.parse_incoming_data_references()
